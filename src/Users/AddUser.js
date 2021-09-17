@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import Card from '../UI/Card';
 import Button from '../UI/Button';
+import ErrorModal from '../UI/ErrorModal';
 import classes from './AddUser.module.css'
 
 const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername]=useState('');
   const [enteredAge, setEnteredAge]=useState('');
+  const [error, setError] = useState();
   
   const addUserHandler = (e) => {
     e.preventDefault();
@@ -13,6 +15,11 @@ const AddUser = (props) => {
     //logic for validation of wrong form inputs
     if (enteredUsername === "" || enteredAge === "" || +enteredAge < 1) {
       console.log('you dun goofed')
+      setError({
+        title: "Invalid input",
+        message: "Please enter valid inputs"
+      });
+      
       return;
     }
 
@@ -31,8 +38,13 @@ const AddUser = (props) => {
     setEnteredAge(e.target.value)
   }
 
+  const errorHandler = () => {
+    setError(null)
+  }
+
   return (
-    
+    <>
+    {error && <ErrorModal title={error.title} message={error.message} onConfirm={errorHandler} /> }
     <Card className={classes.input}>
       <form onSubmit={addUserHandler}>
         <label htmlFor="username">Username</label>
@@ -42,6 +54,7 @@ const AddUser = (props) => {
         <Button type="submit">Add User</Button>
       </form>
     </Card>
+    </>
   )
 }
 
